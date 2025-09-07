@@ -1,17 +1,21 @@
-import {test, expect} from '@playwright/test';
-import loginPage from '../pages/loginPage';
-const loginData = JSON.parse(JSON.stringify(require('../utils/variables.json')));
+import { test, expect } from '@playwright/test';
+import LoginPage from '../pages/loginPage';
+const loginData = require('../utils/variables.json');
 
-test('login form is present', async ({page}) => {
-    const login = new loginPage(page);
-    await login.navigate();
-    await login.login(loginData.login_master.email, loginData.login_master.password);
-    await login.assertRedirectedToLoginOtp();           
-    //await expect(page).toHaveURL(/\/login1-otp(\?.*)?$/);
+let login;
+
+test.beforeEach(async ({ page }) => {
+    // Initialize the LoginPage instance before each test
+    login = new LoginPage(page);
 });
 
-test('complete login process', async ({page}) => {
-    const login = new loginPage(page);
+test('Login form is present and functional', async () => {
+    await login.navigate();
+    await login.login(loginData.login_master.email, loginData.login_master.password);
+    await login.assertRedirectedToLoginOtp();
+});
+
+test('Complete login process redirects to dashboard', async () => {
     await login.completeLoginProcess(
         loginData.login_master.email,
         loginData.login_master.password,
