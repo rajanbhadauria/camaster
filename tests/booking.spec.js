@@ -1,10 +1,10 @@
-import {test, expect} from '@playwright/test';
-import loginPage from '../pages/loginPage';
-const loginData = JSON.parse(JSON.stringify(require('../utils/variables.json')));
+import { test, expect } from '@playwright/test';
+import LoginPage from '../pages/loginPage';
+import { BookingListingPage } from '../pages/bookingListingPage';
+const loginData = require('../utils/variables.json');
 
-
-test.skip('add a new booking', async ({page}) => {
-    const login = new loginPage(page);
+test('add a new booking', async ({ page }) => {
+    const login = new LoginPage(page);
     await login.completeLoginProcess(
         loginData.login_master.email,
         loginData.login_master.password,
@@ -12,7 +12,7 @@ test.skip('add a new booking', async ({page}) => {
     );
     await login.assertRedirectedToDashboard();
 
-    const bookingListing = new bookingListingPage(page);
+    const bookingListing = new BookingListingPage(page);
     await bookingListing.navigate();
-    await bookingListing.addBooking();    
+    await bookingListing.addBooking({ status: 'confirmed' }); // Pass booking object if needed
 });
