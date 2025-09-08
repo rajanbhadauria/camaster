@@ -59,7 +59,7 @@ class LoginPage {
                 expect(this.page.locator(otpInputSelector)).toBeVisible();
                 await this.page.locator(otpInputSelector).type(otp[i]);
             }
-            this.selectors.submitOtpButton.click();
+            
         } catch (error) {
             console.error("Failed to fill OTP:", error);
         }
@@ -68,10 +68,7 @@ class LoginPage {
     async submitOtp() {
         try {
             console.log("Submitting OTP");
-            await this.page.waitForLoadState("domcontentloaded");
             await this.selectors.submitOtpButton.click();
-            await this.page.waitForTimeout(2000);
-            await this.page.waitForLoadState("networkidle");
         } catch (error) {
             console.error("Failed to submit OTP:", error);
         }
