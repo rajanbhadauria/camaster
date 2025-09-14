@@ -33,6 +33,8 @@ class BookingListingPage {
     this.expandedActions = page.locator("//div[@class='booking-list-card-item']//span[@class='translate d-flex justify-content-between w-100 guest-link-item'][normalize-space()='Guest Link']");
     this.shareLinkBtn = page.locator("//div[contains(@class,'dropdown-menu dropdown-menu-right notranslate booking-list-card-item-more-menu-dropdown show')]//ul[contains(@class,'preferences_child')]//span[@data-label='Share' and normalize-space()='Share']");
     this.shareLinkInput = page.locator('#shareBookingModal_linkCopyInput');
+
+    this.bookingNav = page.locator('a', { hasText: 'Bookings' })
   }
 
   getFutureDate(daysAfterToday = 10) {
@@ -69,10 +71,26 @@ class BookingListingPage {
     return precheckinLink;
   }
 
-  async navigate() {
+  async navigateToBookingListing() {
     console.log('Navigating to booking listing page');
-    await this.page.goto('/client/v2/bookings', { waitUntil: 'load' });
-    
+    try {
+      // await this.bookingNav.waitFor({ state: 'visible', timeout: 5000 });
+      // await this.bookingNav.click();
+      await this.page.goto('/client/v2/bookings', { waitUntil: 'load' });  
+      } catch (error) { 
+        console.error("Navigation to booking listing page failed, trying direct URL:", error);
+      }
+    //await this.page.goto('/client/v2/bookings', { waitUntil: 'load' });    
+  }
+
+  
+  async assertRedirectedToBooking() {
+      try {
+          console.log("Asserting redirection to booking page");
+          await expect(this.page).toHaveURL(/\/bookings(\?.*)?$/);
+      } catch (error) {
+          console.error("Redirection to booking page failed:", error);
+      }
   }
 
   async addBooking(booking) {

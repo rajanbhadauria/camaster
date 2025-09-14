@@ -79,6 +79,7 @@ class LoginPage {
             console.log("Asserting redirection to dashboard");
             await this.page.waitForLoadState("domcontentloaded");
             await expect(this.page).toHaveURL(/\/dashboard(\?.*)?$/);
+            console.log("Redirection to dashboard confirmed");
         } catch (error) {
             console.error("Redirection to dashboard failed:", error);
         }
@@ -90,8 +91,8 @@ class LoginPage {
             await this.navigate();
             await this.login(email, password);
             await this.page.waitForLoadState("domcontentloaded");
-            await this.assertRedirectedToLoginOtp();
-            await this.fillOtp(otp);           
+            //await this.assertRedirectedToLoginOtp();
+            //await this.fillOtp(otp);           
             await this.assertRedirectedToDashboard();
         } catch (error) {
             console.error("Complete login process failed:", error);

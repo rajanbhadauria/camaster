@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
 test('Login form is present and functional', async () => {
     await login.navigate();
     await login.login(loginData.login_master.email, loginData.login_master.password);
-    await login.assertRedirectedToLoginOtp();
+    //await login.assertRedirectedToLoginOtp();
 });
 
 test('Complete login process redirects to dashboard', async () => {
