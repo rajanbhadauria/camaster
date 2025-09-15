@@ -18,7 +18,7 @@ test.skip('add a new booking', async ({ page }) => {
     await bookingListing.addBooking({ status: 'confirmed' }); // Pass booking object if needed
 });
 
-test('pre-checkin link copy', async ({ context, page }) => {
+test('pre-checkin link copy', async ({ browser, page }) => {
    
     const login = new LoginPage(page);
     await login.completeLoginProcess(
@@ -32,16 +32,23 @@ test('pre-checkin link copy', async ({ context, page }) => {
     const bookingListing = new BookingListingPage(page);
     await bookingListing.navigateToBookingListing();
     await bookingListing.assertRedirectedToBooking();
+    
+    
     await expect(page).toHaveURL(/client\/v2\/bookings/);
-    await expect(page.locator('#add_booking_button')).toBeVisible();
+    await bookingListing.loadingSpinner.first().waitFor({ state: 'hidden', timeout: 10000 });
+    await bookingListing.addBookingBtn.waitFor({ state: 'visible', timeout: 5000 });
     console.log('Booking listing page loaded successfully');
 
-    // Uncomment when the feature is stable
-    console.log('Attempting to copy pre-checkin link');
 
+    // Uncomment when the feature is stable
+    await bookingListing.bookingActionsBtn.first().waitFor({ state: 'visible', timeout: 5000 });
+    console.log('Attempting to copy pre-checkin link');
     const copiedLink = await bookingListing.copyPrecheckinLink();
     console.log('Copied Pre-checkin Link:', copiedLink);
-    const newContext = await browser.newContext();
-    const newPage = await newContext.newPage();
-    await newPage.goto(copiedLink);
+    await page.close();
+    
+    const freshContext = await browser.newContext();
+    const newPage = await freshContext.newPage();
+    await newPage.goto(copiedLink, { waitUntil: 'load' });
+    await newPage.waitForTimeout(10000)
 });

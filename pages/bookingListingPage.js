@@ -29,7 +29,7 @@ class BookingListingPage {
     this.submitButton =  page.getByRole('button', { name: 'Save Changes' });
     this.loadingSpinner = page.locator('div.custom-loading-container');
 
-    this.bookingActionsBtn = page.locator('.booking-list-card-item #moreMenu');
+    this.bookingActionsBtn = page.locator('.booking-list-card-item #moreMenu', { state: "visible" });
     this.expandedActions = page.locator("//div[@class='booking-list-card-item']//span[@class='translate d-flex justify-content-between w-100 guest-link-item'][normalize-space()='Guest Link']");
     this.shareLinkBtn = page.locator("//div[contains(@class,'dropdown-menu dropdown-menu-right notranslate booking-list-card-item-more-menu-dropdown show')]//ul[contains(@class,'preferences_child')]//span[@data-label='Share' and normalize-space()='Share']");
     this.shareLinkInput = page.locator('#shareBookingModal_linkCopyInput');
@@ -56,8 +56,9 @@ class BookingListingPage {
   async copyPrecheckinLink() {
     console.log('Copying pre-checkin link');
     await this.loadingSpinner.first().waitFor({ state: 'hidden', timeout: 10000 });
-    await expect(this.bookingActionsBtn).toBeVisible();
-    this.bookingActionsBtn.click();
+    await this.bookingActionsBtn.first().waitFor({ state: 'visible', timeout: 5000 });
+    await expect(this.bookingActionsBtn.first()).toBeVisible();
+    this.bookingActionsBtn.first().click();
     await this.expandedActions.first().waitFor({ state: 'visible', timeout: 5000 });
     await expect(this.expandedActions.first()).toBeVisible();
     await this.expandedActions.first().click();
