@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 
+
 class BookingListingPage {  
   constructor(page){
     this.page = page
@@ -157,6 +158,9 @@ class BookingListingPage {
   getBookings() {
     return this.bookings;
   }
+
+
+
 }
 
 export { BookingListingPage };

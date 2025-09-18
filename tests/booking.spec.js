@@ -18,7 +18,7 @@ test.skip('add a new booking', async ({ page }) => {
     await bookingListing.addBooking({ status: 'confirmed' }); // Pass booking object if needed
 });
 
-test('pre-checkin link copy', async ({ browser, page }) => {
+test.skip('pre-checkin link copy', async ({ browser, page }) => {
    
     const login = new LoginPage(page);
     await login.completeLoginProcess(

@@ -3,5 +3,14 @@
         "email": "nopms5@yopmail.com",
         "password": "Rajan@123",
         "otp": "111111"
+
+    },
+    "api_master": {
+        "API_BASE_URL": "https://master.chargeautomation.com/api/v1/",
+        "API_KEY": "ab6553d0-5cae-11f0-89d2-edc5f7a236c2",
+        "PROPERTIES": "17231",
+        "RENTAL": "2042677",
+        "CHANNELS": "Direct"
     }
+    
 }
