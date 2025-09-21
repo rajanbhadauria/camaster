@@ -1,4 +1,4 @@
-import {test, expect} from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { BookingListingPage } from '../pages/bookingListingPage';
 import { OnlineCheckinPage } from '../pages/onlineCheckinPage';
 import loginData from '../utils/variables.json';
@@ -14,10 +14,10 @@ let login;
 
 
 test.beforeEach(async ({ page }) => {
-    // Initialize the BookingListingPage instance before each test
-    booking = new BookingListingPage(page);
-    onlineCheckin = new OnlineCheckinPage(page);
-    login = new LoginPage(page);    
+  // Initialize the BookingListingPage instance before each test
+  booking = new BookingListingPage(page);
+  onlineCheckin = new OnlineCheckinPage(page);
+  login = new LoginPage(page);
 
 });
 
@@ -53,29 +53,14 @@ test('should create a booking via API', async ({ page }) => {
   console.log('Booking created via API:', bookingData);
   expect(bookingData).toBeDefined();
   expect(bookingData.data).toBeDefined();
-  
+
   const bookingDetails = bookingData.data;
-  console.log('Booking created via API:', bookingDetails);
-  const onlineCheckinLink = bookingDetails.routes.pre_checkin;
+  await onlineCheckin.checkinLandingPageValidations(bookingDetails);  
+  await page.waitForTimeout(2000);
+  console.log('All assertions passed on Online Checkin Landing Page, starting check-in process now with basic details');
+ 
 
-  console.log('Online Checkin Link:', onlineCheckinLink);
-  await onlineCheckin.goToLandingPage(onlineCheckinLink);
-  await expect(page.url()).toContain('pre-checkin');
-  console.log('Landed on Online Checkin Page');
-
-  await onlineCheckin.landingPageBookingCode.waitFor({ state: 'visible', timeout: 10000 });
-  const bookingCode = await onlineCheckin.landingPageBookingCode.textContent();
-  console.log('Booking Code on Landing Page:', bookingCode);
-  expect(bookingCode).toBe(bookingDetails.id.toString());
-  console.log('Booking code matches booking ID from API');
-
-  console.log('Booking Welcome Message Verification');
-  const welcomeText = await onlineCheckin.welcomeMessage.textContent();
-  expect(welcomeText).toContain(bookingDetails.guest_first_name);
-  console.log('Welcome message contains guest first name from API');
-  await onlineCheckin.startCheckin();
-  await page.waitForTimeout(10000);
-  
-
-
+  // basic info page validations
+  await onlineCheckin.checkinBasicInfoValidations(bookingDetails);
+  await page.waitForTimeout(3000)
 });

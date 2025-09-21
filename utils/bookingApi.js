@@ -73,11 +73,11 @@ async function createBookingApiData() {
         booking_access_code: 'access' + (Math.floor(Date.now() / 1000) + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000)),
     };
 
-    console.log(post_data);
+    //console.log(post_data);
     //return { url, post_data, HEADERS };
     return await axios.post(url, post_data, { headers: HEADERS })
         .then(response => {
-            console.log('Booking created via API:', response.data);
+            //console.log('Booking created via API:', response.data);
             return response.data;
         })
         .catch(error => {
