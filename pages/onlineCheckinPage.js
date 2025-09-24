@@ -10,19 +10,7 @@ export class OnlineCheckinPage {
     this.landingPageConfirmationCode = page.locator('div.welcome__details-item .welcome__reservation-value');
     this.startCheckinButton = page.locator("//span[normalize-space()='Get Started']");
     this.checkinCheckoutDate = page.locator('div.welcome__reservation-value span.welcome__date');
-    // Basic Info page locators
-    this.basicInfoTitle = page.locator('.basic-info__title'); //.basic-info__title
-    this.guestNameInput = page.locator('#basicInfo-fullName');
-    this.guestDobInput = page.locator('#basicInfo-dob');
-    this.phoneInput = page.getByRole('tel');
-    this.emailInput = page.locator('#basicInfo-Email');
-    this.genderSelect = page.locator('#basicInfo-nationality').first();
-    this.nationalitySelect = page.locator('#basicInfo-nationality').last();
-    this.addressInput = page.locator('#update-property-address');
-    this.zipInput = page.locator('#basicInfo-fullName');
-    this.adultInput = page.locator('#basicInfo-adults');
-    this.childInput = page.locator('#basicInfo-children');
-    this.nextButton = page.locator("//span[normalize-space()='Next']");
+   
 
   }
 
@@ -131,38 +119,21 @@ export class OnlineCheckinPage {
     console.log('Check-in process started');
   }
 
-  async checkinBasicInfoValidations(bookingDetails) {
-
-
-    console.log("redirecting to basic info page");
-    await this.startCheckin();
-
-    // Add assertions for basic info page elements here
-    console.log('Validating Basic Info page elements');
-    await this.page.waitForNavigation({ waitUntil: 'load' });
-    console.log("Basic info url", this.page.url());
-    await this.page.waitForLoadState('networkidle');
-
-
-    await expect(this.basicInfoTitle.first()).toBeVisible();
-    //await expect(this.page.url()).toContain('pre-checkin-step-1');
-    console.log('Landed on Basic Info page');
-    // Add more element assertions as needed
-    await expect(this.basicInfoTitle.first()).toHaveText(/Contact Information/);
-    console.log("Page title is matched");
-    // match guest name
-    await expect(this.guestNameInput.first()).toHaveValue(`${bookingDetails.guest_first_name} ${bookingDetails.guest_last_name}`);
-    // Narrow the locator to the first matching input
-    console.log("Matched guest name");
-
-    expect(this.emailInput.first()).toHaveValue(bookingDetails.guest_email);
-    console.log("Matched guest email");
-
-    expect(this.phoneInput).toHaveValue(bookingDetails.guest_phone);
-    console.log("Matched guest phone");
-
-    // Add more validations as needed
-
+  
+  async fillBasicInfoForm(details) {
+    console.log('Filling Basic Info form');
+    if (details.guestName) {
+      await this.guestNameInput.fill(details.guestName);
+      console.log('Filled guest name:', details.guestName);
+    }
+    if (details.guestDob) {
+      await this.guestDobInput.fill(details.guestDob);
+      console.log('Filled guest DOB:', details.guestDob);
+    }
+    if (details.phone) {
+      await this.phoneInput.fill(details.phone);
+      console.log('Filled phone number:', details.phone);
+    }
   }
 
 } 

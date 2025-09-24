@@ -3,11 +3,12 @@ import { BookingListingPage } from '../pages/bookingListingPage';
 import { OnlineCheckinPage } from '../pages/onlineCheckinPage';
 import loginData from '../utils/variables.json';
 import LoginPage from '../pages/loginPage';
+import { BasicInfoPage } from '../pages/basicInfoPage';
 const axios = require('axios');
 const { createBookingApiData } = require("../utils/bookingApi");
 
 // Dynamically import faker to support ES Module
-let th;
+let basicInfo;
 let booking;
 let onlineCheckin;
 let login;
@@ -18,7 +19,7 @@ test.beforeEach(async ({ page }) => {
   booking = new BookingListingPage(page);
   onlineCheckin = new OnlineCheckinPage(page);
   login = new LoginPage(page);
-
+  basicInfo = new BasicInfoPage(page);
 });
 
 test.skip('Online Checkin landing page data validation', async ({ page }) => {
@@ -55,12 +56,17 @@ test('should create a booking via API', async ({ page }) => {
   expect(bookingData.data).toBeDefined();
 
   const bookingDetails = bookingData.data;
-  await onlineCheckin.checkinLandingPageValidations(bookingDetails);  
+  await onlineCheckin.checkinLandingPageValidations(bookingDetails);
   await page.waitForTimeout(2000);
   console.log('All assertions passed on Online Checkin Landing Page, starting check-in process now with basic details');
- 
-
+  
   // basic info page validations
-  await onlineCheckin.checkinBasicInfoValidations(bookingDetails);
-  await page.waitForTimeout(3000)
+  console.log('Starting Basic Info page validations');
+  await onlineCheckin.startCheckin();
+  console.log('Check-in process started, validating Basic Info page now');
+  await basicInfo.checkinBasicInfoValidations(bookingDetails);
+  console.log('Basic Info page clear and fill form validations');
+  await basicInfo.validationMessagePageInputs();
+  
+  await page.waitForTimeout(10000)
 });
