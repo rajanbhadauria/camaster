@@ -4,8 +4,9 @@ import { OnlineCheckinPage } from '../pages/onlineCheckinPage';
 import loginData from '../utils/variables.json';
 import LoginPage from '../pages/loginPage';
 import { BasicInfoPage } from '../pages/basicInfoPage';
+import { on } from 'events';
 const axios = require('axios');
-const { createBookingApiData } = require("../utils/bookingApi");
+const { createBookingApiData, getBookingAPI } = require("../utils/bookingApi");
 
 // Dynamically import faker to support ES Module
 let basicInfo;
@@ -49,6 +50,7 @@ test.skip('Online Checkin landing page data validation', async ({ page }) => {
 });
 
 test('should create a booking via API', async ({ page }) => {
+  const { faker } = await import('@faker-js/faker');
   console.log('Creating booking via API');
   const bookingData = await createBookingApiData();
   console.log('Booking created via API:', bookingData);
@@ -59,7 +61,7 @@ test('should create a booking via API', async ({ page }) => {
   await onlineCheckin.checkinLandingPageValidations(bookingDetails);
   await page.waitForTimeout(2000);
   console.log('All assertions passed on Online Checkin Landing Page, starting check-in process now with basic details');
-  
+
   // basic info page validations
   console.log('Starting Basic Info page validations');
   await onlineCheckin.startCheckin();
@@ -67,6 +69,35 @@ test('should create a booking via API', async ({ page }) => {
   await basicInfo.checkinBasicInfoValidations(bookingDetails);
   console.log('Basic Info page clear and fill form validations');
   await basicInfo.validationMessagePageInputs();
-  
-  await page.waitForTimeout(10000)
+  console.log('Filled Basic Info form ');
+  await basicInfo.fillBasicInfoForm({
+    guestName: `${faker.person.firstName()} ${faker.person.lastName()}`,
+    guestDob: '21-05-1982',
+    phone: faker.phone.number(),
+    email: faker.internet.email(),
+    address: faker.location.streetAddress(),
+    zip: faker.location.zipCode()
+  });
+  console.log('Filled Basic Info form with new data');  
+  await basicInfo.nextButton.click();
+  await page.waitForLoadState('load');
+  await page.waitForLoadState('networkidle');
+  await basicInfo.arrivalTitle.waitFor({ state: 'visible', timeout: 10000 });
+  await expect(basicInfo.arrivalTitle).toBeVisible();
+  console.log('Landed on Arrival Info page');
+  await expect(onlineCheckin.backBtn).toBeEnabled({ timeout: 5000 });
+  await expect(onlineCheckin.backBtn).toBeVisible();
+  await page.waitForLoadState('networkidle');  
+  //await page.waitForTimeout(2000);
+  console.log('Clicked on back button on Basic Info page');
+  await onlineCheckin.backBtn.click();
+  console.log('Clicked');
+  await page.waitForLoadState('load');
+  await page.waitForLoadState('networkidle');
+  console.log('Verifying filled data');
+  const updatedBookingData = await getBookingAPI(bookingDetails.id);
+  console.log('Fetched updated booking data from API:', updatedBookingData);
+  await basicInfo.validatingFilledBasicInfoForm(updatedBookingData.data);
+  await page.waitForTimeout(2000);
+  console.log('All assertions passed on Basic Info Page');
 });

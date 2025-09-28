@@ -17,13 +17,16 @@ export class BasicInfoPage {
         this.genderSelectError = page.locator('span.invalid-feedback').first();
         this.nationalitySelect = page.locator('#basicInfo-nationality').last();
         this.nationalitySelectError = this.nationalitySelect.locator('+ div.invalid-feedback');
+        this.nationalitySerchInput = page.locator('input.search-field-input').last();
         this.addressInput = page.locator('#update-property-address');
-        this.addressInputError = this.addressInput.locator('+ div.invalid-feedback');
+        this.addressInputError = this.addressInput.locator('+ span.invalid-feedback');
         this.zipInput = page.locator('#basicInfo-fullName').last();
-        this.zipInputError = page.locator('span.invalid-feedback').last();
+        this.zipInputError = this.zipInput.locator('+ div.invalid-feedback');
         this.adultInput = page.locator('#basicInfo-adults');
         this.childInput = page.locator('#basicInfo-children');
-        this.nextButton = page.locator("//span[normalize-space()='Next']");
+        this.nextButton = page.locator(".precheckin-v2__next-button");
+
+        this.arrivalTitle = page.locator('.arrival__title');
         
     }
 
@@ -66,6 +69,8 @@ export class BasicInfoPage {
         expect(this.emailInput.first()).toHaveValue(bookingDetails.guest_email);
         console.log("Matched guest email");
 
+        await this.phoneInput.waitFor({ state: 'visible', timeout: 5000 });
+        await expect(this.phoneInput).toBeVisible();
         const actualPhone = await this.phoneInput.inputValue();
         expect(actualPhone.replace(/\s+/g, '')).toBe(bookingDetails.guest_phone.replace(/\s+/g, ''));
         console.log("Matched guest phone");
@@ -102,5 +107,29 @@ export class BasicInfoPage {
 
         await expect(this.zipInputError).toHaveText('Zip code is required *');
         console.log('Validation message for empty zip code is displayed');
+    }
+
+    async fillBasicInfoForm(guestDetails) { 
+        console.log('Filling Basic Info form with details:', guestDetails);
+        console.log('Filling guest name:', guestDetails.guestName);
+        await this.guestNameInput.fill(guestDetails.guestName);
+        console.log('Filling guest DOB:', guestDetails.guestDob);
+        await this.guestDobInput.fill(guestDetails.guestDob);
+        console.log('Filling phone number:', guestDetails.phone);
+        await this.phoneInput.fill(guestDetails.phone);
+        console.log('Filling email:', guestDetails.email);
+        await this.emailInput.fill(guestDetails.email);
+        await this.genderSelect.click();
+        await this.genderSelect.locator('text=Male').first().click(); // Select Male
+        await this.nationalitySelect.click();
+        await this.nationalitySerchInput.last().fill('India');        
+        await this.nationalitySelect.locator('text=Indian').first().click(); // Select Indian
+        await this.addressInput.fill(guestDetails.address);
+        await this.zipInput.fill(guestDetails.zip);
+    }
+
+    async validatingFilledBasicInfoForm(bookingData) {
+        this.checkinBasicInfoValidations(bookingData);
+        console.log('Validated filled Basic Info form with booking data from API:', bookingData);
     }
 }

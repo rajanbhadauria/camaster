@@ -10,8 +10,7 @@ export class OnlineCheckinPage {
     this.landingPageConfirmationCode = page.locator('div.welcome__details-item .welcome__reservation-value');
     this.startCheckinButton = page.locator("//span[normalize-space()='Get Started']");
     this.checkinCheckoutDate = page.locator('div.welcome__reservation-value span.welcome__date');
-   
-
+    this.backBtn = page.locator('div.precheckin-v2__footer button', { hasText: 'Back' });
   }
 
   async compareDates(dateStr1, dateStr2) {
@@ -118,22 +117,4 @@ export class OnlineCheckinPage {
     await this.page.waitForLoadState('networkidle');
     console.log('Check-in process started');
   }
-
-  
-  async fillBasicInfoForm(details) {
-    console.log('Filling Basic Info form');
-    if (details.guestName) {
-      await this.guestNameInput.fill(details.guestName);
-      console.log('Filled guest name:', details.guestName);
-    }
-    if (details.guestDob) {
-      await this.guestDobInput.fill(details.guestDob);
-      console.log('Filled guest DOB:', details.guestDob);
-    }
-    if (details.phone) {
-      await this.phoneInput.fill(details.phone);
-      console.log('Filled phone number:', details.phone);
-    }
-  }
-
 } 
