@@ -26,7 +26,7 @@ export class BasicInfoPage {
         this.childInput = page.locator('#basicInfo-children');
         this.nextButton = page.locator(".precheckin-v2__next-button");
 
-        this.arrivalTitle = page.locator('.arrival__title');
+        
         
     }
 
@@ -49,9 +49,9 @@ export class BasicInfoPage {
     async checkinBasicInfoValidations(bookingDetails) {       
 
         // Add assertions for basic info page elements here
-        console.log('Validating Basic Info page elements');
-        await this.page.waitForNavigation({ waitUntil: 'load' });
+        console.log('Validating Basic Info page elements');        
         console.log("Basic info url", this.page.url());
+        await thispage.waitForLoadState('load');
         await this.page.waitForLoadState('networkidle');
 
 

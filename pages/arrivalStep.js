@@ -6,3 +6,4 @@ class ArrivalStep {
 
     }
 }
+export { ArrivalStep };
