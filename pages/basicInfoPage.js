@@ -51,7 +51,7 @@ export class BasicInfoPage {
         // Add assertions for basic info page elements here
         console.log('Validating Basic Info page elements');        
         console.log("Basic info url", this.page.url());
-        await thispage.waitForLoadState('load');
+        await this.page.waitForLoadState('load');
         await this.page.waitForLoadState('networkidle');
 
 
@@ -66,13 +66,13 @@ export class BasicInfoPage {
         // Narrow the locator to the first matching input
         console.log("Matched guest name");
 
-        expect(this.emailInput.first()).toHaveValue(bookingDetails.guest_email);
+        await expect(this.emailInput.first()).toHaveValue(bookingDetails.guest_email);
         console.log("Matched guest email");
 
         await this.phoneInput.waitFor({ state: 'visible', timeout: 5000 });
         await expect(this.phoneInput).toBeVisible();
         const actualPhone = await this.phoneInput.inputValue();
-        expect(actualPhone.replace(/\s+/g, '')).toBe(bookingDetails.guest_phone.replace(/\s+/g, ''));
+        await expect(actualPhone.replace(/\s+/g, '')).toBe(bookingDetails.guest_phone.replace(/\s+/g, ''));
         console.log("Matched guest phone");
 
         await expect(this.addressInput).toHaveValue(bookingDetails.guest_address);
@@ -129,7 +129,7 @@ export class BasicInfoPage {
     }
 
     async validatingFilledBasicInfoForm(bookingData) {
-        this.checkinBasicInfoValidations(bookingData);
+        await this.checkinBasicInfoValidations(bookingData);
         console.log('Validated filled Basic Info form with booking data from API:', bookingData);
     }
 }
